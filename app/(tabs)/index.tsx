@@ -1,98 +1,162 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import React from 'react';
+import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+// 1. Import useRouter từ expo-router
+import { useRouter } from 'expo-router';
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+const insightsData = [
+  {
+    id: 1,
+    title: 'Scan new',
+    subtitle: 'Scanned 483',
+    icon: <Feather name="maximize" size={24} color="#6B6CEB" />,
+    iconBg: '#EAEBFF',
+  },
+  {
+    id: 2,
+    title: 'Counterfeits',
+    subtitle: 'Counterfeited 32',
+    icon: <Feather name="alert-triangle" size={24} color="#E88A6E" />,
+    iconBg: '#FCECE8',
+  },
+  {
+    id: 3,
+    title: 'Success',
+    subtitle: 'Checkouts 8',
+    icon: <Feather name="check-circle" size={24} color="#48C7A5" />,
+    iconBg: '#E5F7F2',
+  },
+  {
+    id: 4,
+    title: 'Directory',
+    subtitle: 'History 26',
+    icon: <Feather name="calendar" size={24} color="#52ABEE" />,
+    iconBg: '#E8F5FD',
+  },
+];
 
-export default function HomeScreen() {
+export default function App() {
+  // 2. Khởi tạo router
+  const router = useRouter();
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.content}>
+        
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.greeting}>Hello 👋</Text>
+            <Text style={styles.name}>Christie Doe</Text>
+          </View>
+          {/* Lưu ý: Đảm bảo đường dẫn ảnh này tồn tại trong thư mục assets của bạn */}
+          <Image
+  source={require('../../assets/avatar.png')} // Sử dụng đường dẫn tương đối
+  style={styles.avatar}
+/>
+        </View>
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <Text style={styles.sectionTitle}>Your Insights</Text>
+
+        <View style={styles.grid}>
+          {insightsData.map((item) => (
+            <TouchableOpacity 
+              key={item.id} 
+              style={styles.card}
+              // 3. Thêm sự kiện onPress để điều hướng
+              onPress={() => {
+                if (item.title === 'Scan new') {
+                  router.push('/scan'); // Sẽ tìm đến file app/scan.tsx
+                }
+              }}
+            >
+              <View style={[styles.iconContainer, { backgroundColor: item.iconBg }]}>
+                {item.icon}
+              </View>
+              <Text style={styles.cardTitle}>{item.title}</Text>
+              <Text style={styles.cardSubtitle}>{item.subtitle}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingTop: 40,
+  },
+  header: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    gap: 8,
+    marginBottom: 40,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  greeting: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#1A1A1A',
+    marginBottom: 4,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  name: {
+    fontSize: 16,
+    color: '#666666',
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#EEE' // Fallback nếu không load được ảnh
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#333333',
+    marginBottom: 20,
+  },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  card: {
+    width: '47%',
+    backgroundColor: '#F9FAFC',
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  iconContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#333333',
+    marginBottom: 6,
+  },
+  cardSubtitle: {
+    fontSize: 12,
+    color: '#A0A0A0',
+    fontWeight: '500',
   },
 });
